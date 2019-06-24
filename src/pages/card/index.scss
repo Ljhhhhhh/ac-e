@@ -1,0 +1,34 @@
+
+.state-name{
+  margin-right: 10px;
+  &.used{
+    color: #FF3333;
+  }
+}
+
+.handle-wrap{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .search-form{
+    flex: 5
+  }
+  button{
+    margin: 0 5px;
+  }
+}
+
+.ant-form-item-control{
+  line-height: 1;
+}
+.search-btn{
+  margin-left: 20px;
+}
+
+.bf-container {
+  border: 1px solid #ccc;
+}
+
+.handle-add .link{
+  margin-right: 20px;
+}

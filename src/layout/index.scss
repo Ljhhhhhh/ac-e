@@ -1,0 +1,29 @@
+.layout-content{
+  padding: 20px;
+  // background: #f6f6f6;
+  // min-height: calc(100vh - 50px);
+  // max-height: calc(100vh - 50px);
+  overflow: auto;
+}
+
+.header {
+  text-align: center;
+  line-height: 50px;
+}
+
+.footer{
+  text-align: center;
+  padding: 30px 0;
+  .title{
+    font-size: 16px;
+  }
+  .info{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    div{
+      line-height: 30px;
+    }
+  }
+}
