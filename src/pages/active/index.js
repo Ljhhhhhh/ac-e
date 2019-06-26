@@ -16,6 +16,7 @@ const Layout = {
 
 const Login = props => {
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form;
+
   const handleSubmit = () => {
     validateFields((err) => {
       if (!err) {

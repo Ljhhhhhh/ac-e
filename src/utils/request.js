@@ -4,9 +4,10 @@ import Storage from "./storage";
 
 const storage = new Storage();
 
+const baseURL = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:3001' : 'http://ac.cixi518.com'
 // create an axios instance
 const service = axios.create({
-  baseURL: "http://127.0.0.1:3001", // api的base_url
+  baseURL, // api的base_url
   timeout: 5000 // request timeoutheaders: { 'Content-Type': 'application/x-www-form-urlencoded' },
 });
 
