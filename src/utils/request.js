@@ -1,6 +1,5 @@
 import axios from "axios";
 import { message } from "antd";
-import qs from "qs";
 import Storage from "./storage";
 
 const storage = new Storage();

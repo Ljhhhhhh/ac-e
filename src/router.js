@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
-import { HashRouter, Route, Switch, Redirect, Link } from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import Storage from "./utils/storage";
-import routerConfig from "./config/routerConfig";
 import { ContextProvider, myContext } from "./storeByHooks/reducer";
 import * as actionTypes from "./storeByHooks/actionTypes";
 import App from "./App";
@@ -10,8 +9,7 @@ import Login from "./pages/login";
 import Layout from "./layout/layout";
 import Customer from "./pages/customer";
 import Card from "./pages/card";
-
-import NoMatch from "./pages/nomatch";
+import Info from "./pages/info";
 
 const storage = new Storage();
 
@@ -23,8 +21,10 @@ const Router = props => {
           <Switch>
             <Route exact path="/" component={Active} />
             <Route exact path="/login" component={Login} />
-            <AuthorizedRoute path="/customer" component={Customer} />
+            <Route exact path="/info" component={Info} />
             <AuthorizedRoute path="/card" component={Card} />
+            <AuthorizedRoute path="/customer" component={Customer} />
+            <Redirect to='/' />
           </Switch>
         </Layout>
       </App>
@@ -49,8 +49,8 @@ const AuthorizedRoute = props => {
     }
   }
 
-  const { component: Component, ...rest } = props;
-  const userinfo = state.userinfo;
+  const { component: Component } = props;
+  // const userinfo = state.userinfo;
 
   return (
     <Route

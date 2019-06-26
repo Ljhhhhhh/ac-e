@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Table, Button, Input, Row, Col, Form, message } from "antd";
-import {Link} from 'react-router-dom'
+import { Table, Button, Input, Row, Col, Form } from "antd";
+import { Link } from "react-router-dom";
+import exportExcel from '../../utils/excel';
 import CardApi from "../../api/card";
 import "./index.scss";
 
@@ -13,7 +14,7 @@ const Card = () => {
   const [list, setList] = useState([]);
   const [key, setKey] = useState("");
 
-  const fetchList = useEffect(() => {
+  useEffect(() => {
     const data = {
       page,
       card_no: key
@@ -35,20 +36,36 @@ const Card = () => {
         card.key = card.card_no;
         return card;
       });
-      const allList = [...newList, ...list]
+      const allList = [...newList, ...list];
       setList(allList);
-      setTotal(total + 100)
+      setTotal(total + 100);
     });
+  }, [list]);
+
+  const downloadExcel = useCallback(() => {
+    const column = [
+      {
+        title: "服务卡号",
+        dataIndex: "card_no",
+        key: "card_no"
+      },
+      {
+        title: "激活密码",
+        dataIndex: "pwd",
+        key: "pwd"
+      }
+    ];
+    exportExcel(column, list)
   }, [list]);
 
   const columns = [
     {
-      title: "卡号",
+      title: "服务卡号",
       dataIndex: "card_no",
       key: "card_no"
     },
     {
-      title: "密码",
+      title: "激活密码",
       dataIndex: "pwd",
       key: "pwd"
     },
@@ -76,9 +93,14 @@ const Card = () => {
           <FilterForm setKey={setKey} setPage={setPage} />
         </div>
         <div className="handle-add">
-          <Link to="/customer" className="link">查看客户表</Link>
+          <Link to="/customer" className="link">
+            查看客户表
+          </Link>
           <Button type="dashed" icon="plus" onClick={addCard}>
             生成100张
+          </Button>
+          <Button type="primary" icon="download" onClick={downloadExcel}>
+            导出
           </Button>
         </div>
       </div>

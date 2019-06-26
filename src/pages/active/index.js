@@ -1,14 +1,13 @@
 import React from "react";
 import { Row, Col, Form, Input, Button, message, Radio } from "antd";
-import UserApi from "../../api/user";
-import Storage from "../../utils/storage";
+import CustomerApi from "../../api/customer";
 import { withRouter } from "react-router";
+import {Link} from 'react-router-dom'
 import "./index.scss";
 
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
-const userApi = new UserApi();
-const storage = new Storage();
+const customerApi = new CustomerApi();
 
 const Layout = {
   xs: 20,
@@ -18,19 +17,23 @@ const Layout = {
 const Login = props => {
   const { getFieldDecorator, validateFields, getFieldsValue } = props.form;
   const handleSubmit = () => {
-    validateFields((err, values) => {
+    validateFields((err) => {
       if (!err) {
         const data = getFieldsValue();
-        userApi.login(data).then(res => {
-          if (res.status === 0) {
-            res.data.role = Math.random(0, 1) >= 0.5 ? 1 : 0;
-            storage.setStorage("userinfo", res.data);
-            message.success("登录成功");
-            props.history.replace("/");
+        customerApi.active(data).then(res => {
+          if (res.code === 0) {
+            message.success(res.msg);
+            console.log(data, 'data');
+            props.history.push({
+              pathname: '/info',
+              state: {card_no: data.card_no}
+            }
+            )
+          } else {
+            message.error(res.msg)
           }
-        });
+        })
       } else {
-        console.log(err);
         Object.keys(err).forEach(v => {
           message.error(err[v].errors[0].message);
         });
@@ -50,19 +53,20 @@ const Login = props => {
                 <FormItem label="姓名">
                   {getFieldDecorator("username", {
                     initialValue: "",
+                    validateTrigger: 'onBlur',
                     rules: [
                       {
                         required: true,
-                        message: "姓名不能为空"
+                        message: "姓名不能为空",
                       },
                       {
                         min: 2,
                         max: 4,
-                        message: "长度不在范围内"
+                        message: "长度不在范围内",
                       },
                       {
                         pattern: /^[\u4E00-\u9FA5A-Za-z]+$/,
-                        message: "请输入姓名"
+                        message: "请输入姓名",
                       }
                     ]
                   })(<Input placeholder="请输入姓名" />)}
@@ -84,6 +88,7 @@ const Login = props => {
             <FormItem label="身份证号">
               {getFieldDecorator("identity", {
                 initialValue: "",
+                validateTrigger: 'onBlur',
                 rules: [
                   {
                     required: true,
@@ -99,14 +104,11 @@ const Login = props => {
             <FormItem label="服务卡号">
               {getFieldDecorator("card_no", {
                 initialValue: "",
+                validateTrigger: 'onBlur',
                 rules: [
                   {
                     required: true,
                     message: "服务卡号不能为空"
-                  },
-                  {
-                    pattern: /\d{12}/,
-                    message: "服务卡号有误"
                   }
                 ]
               })(<Input placeholder="请输入服务卡号" />)}
@@ -114,15 +116,16 @@ const Login = props => {
             <FormItem label="激活密码">
               {getFieldDecorator("pwd", {
                 initialValue: "",
+                validateTrigger: 'onBlur',
                 rules: [
                   {
                     required: true,
                     message: "激活密码不能为空"
                   },
-                  {
-                    pattern: /\d{8}/,
-                    message: "激活密码有误"
-                  }
+                  // {
+                  //   pattern: /\d{8}/,
+                  //   message: "激活密码有误"
+                  // }
                 ]
               })(<Input placeholder="请输入激活密码" />)}
             </FormItem>
@@ -130,71 +133,12 @@ const Login = props => {
               <Button type="primary" onClick={handleSubmit}>
                 激活
               </Button>
+              <Link style={{marginLeft: '20px'}} to='/info'>查询信息</Link>
             </FormItem>
           </Form>
         </Col>
       </Row>
-      <FindInfo getFieldDecorator={getFieldDecorator} validateFields={validateFields} getFieldsValue={getFieldsValue} />
     </div>
-  );
-};
-
-const FindInfo = props => {
-  const { getFieldDecorator, validateFields, getFieldsValue } = props;
-
-  const handleSubmit = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        const data = getFieldsValue();
-        userApi.login(data).then(res => {
-          if (res.status === 0) {
-            res.data.role = Math.random(0, 1) >= 0.5 ? 1 : 0;
-            storage.setStorage("userinfo", res.data);
-            message.success("登录成功");
-            props.history.replace("/");
-          }
-        });
-      } else {
-        console.log(err);
-        Object.keys(err).forEach(v => {
-          message.error(err[v].errors[0].message);
-        });
-        return false;
-      }
-    });
-  };
-
-  return (
-    <Row type="flex" justify="center">
-      <Col {...Layout} ><hr/></Col>
-      <Col {...Layout} >
-        <h2>查询信息</h2>
-      </Col>
-      <Col {...Layout} >
-      <Form>
-        <FormItem label="服务卡号">
-          {getFieldDecorator("card_no", {
-            initialValue: "",
-            rules: [
-              {
-                required: true,
-                message: "服务卡号不能为空"
-              },
-              {
-                pattern: /\d{12}/,
-                message: "服务卡号有误"
-              }
-            ]
-          })(<Input placeholder="请输入服务卡号" />)}
-        </FormItem>
-        <FormItem>
-          <Button type="dashed" onClick={handleSubmit}>
-            查询
-          </Button>
-        </FormItem>
-      </Form>
-      </Col>
-    </Row>
   );
 };
 
